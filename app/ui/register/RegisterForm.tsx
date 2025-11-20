@@ -18,10 +18,10 @@ export default function RegisterForm() {
   return (
     <div className="w-full max-w-md">
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
           Create your account
         </h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-slate-900">
           Fill in your details to get started.
         </p>
         {state.message && (
@@ -169,7 +169,7 @@ export default function RegisterForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-indigo-500/30 transition hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:bg-indigo-500/60"
+          className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-black shadow-md shadow-indigo-500/30 transition hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:bg-indigo-500/60"
         >
           Create account
         </button>
