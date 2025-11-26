@@ -1,4 +1,4 @@
-// app/page.tsx  ←  ZERO dependencies version (works instantly)
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -23,13 +23,13 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
-              href="/dashboard/MyProducts"
+              href="/dashboard"
               className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-lg px-10 py-5 rounded-full transition shadow-lg"
             >
               Start Selling →
             </Link>
             <Link
-              href="/dashboard/MyProducts"
+              href="/dashboard"
               className="bg-white hover:bg-gray-100 text-amber-700 font-bold text-lg px-10 py-5 rounded-full border-2 border-amber-600 transition shadow-lg"
             >
               Explore Marketplace
@@ -65,7 +65,7 @@ export default function Home() {
           Ready to find something truly special?
         </h2>
         <Link
-          href="/dashboard/MyProducts"
+          href="/dashboard"
           className="inline-block bg-white text-amber-600 hover:bg-gray-100 font-bold text-xl px-12 py-6 rounded-full transition"
         >
           Start Shopping Now
