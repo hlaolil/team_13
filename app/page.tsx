@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/Gonecomponents/ui/card";
+import { Card } from "@/components/ui/card";
 import { ArrowRight, Package, Users, Sparkles, ShoppingBag } from "lucide-react";
 
 export default function Home() {
