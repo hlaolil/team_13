@@ -10,7 +10,7 @@ type BrowsePageProps = {
     }>;
 }
 
-export async function CustomerBrowsePage(props : BrowsePageProps) {
+export default async function CustomerBrowsePage(props : BrowsePageProps) {
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
     const currentPage  = Number(searchParams?.page) || 1;
