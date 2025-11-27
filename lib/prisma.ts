@@ -1,15 +1,27 @@
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from './generated/prisma/client'
+// lib/prisma.ts (or wherever this lives)
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from './generated/prisma/client';
+import { Pool } from 'pg';
 
-const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined;
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
 };
-const adapter = new PrismaPg({ connectionString: process.env.POSTGRES_PRISMA_URL })
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL_NON_POOLING,
+  ssl: {
+    rejectUnauthorized: false, // <- accept self-signed certs (dev escape hatch)
+  },
+});
+
+const adapter = new PrismaPg(pool);
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter
+    adapter,
   });
 
-if (process.env.NODE_ENV !== "production")
+if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
+}

@@ -29,7 +29,7 @@ export default function Home() {
               Start Selling →
             </Link>
             <Link
-              href="/dashboard"
+              href="/browse"
               className="bg-white hover:bg-gray-100 text-amber-700 font-bold text-lg px-10 py-5 rounded-full border-2 border-amber-600 transition shadow-lg"
             >
               Explore Marketplace
