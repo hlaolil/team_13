@@ -2,7 +2,14 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig: NextAuthConfig = {
-  pages: { signIn: "/login" },
+  pages: { signIn: "/login", signOut: "/login" },
+  session: {
+    strategy: "jwt",
+    maxAge: 60*60
+  },
+  jwt: {
+    maxAge: 60*60
+  },
 
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -13,11 +20,11 @@ export const authConfig: NextAuthConfig = {
         return isLoggedIn ? true : false;
       }
 
-      if (isLoggedIn) {
-        const role = (auth?.user as any)?.role;
-        const target = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
-        return Response.redirect(new URL(target, nextUrl));
-      }
+      // if (isLoggedIn) {
+      //   const role = (auth?.user as any)?.role;
+      //   const target = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
+      //   return Response.redirect(new URL(target, nextUrl));
+      // }
       return true;
     },
   },
