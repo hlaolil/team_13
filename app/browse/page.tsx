@@ -2,7 +2,7 @@
 import Search from "../ui/browse/BrowseSearch"
 import { Suspense } from "react";
 import Pagination from "../ui/browse/Pagination";
-import { getTotalBrowsePages } from "@/lib/data/customerBrowse";
+import { getTotalBrowsePages } from "@/lib/data/products";
 type BrowsePageProps = {
     searchParams?: Promise<{
         query?: string;
