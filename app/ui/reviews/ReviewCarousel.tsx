@@ -86,7 +86,7 @@ export default function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
           <button
             type="button"
             onClick={goPrev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-1 text-sm shadow hover:bg-white"
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 px-2 py-1 text-sm shadow hover:bg-white"
           >
             {"<"}
           </button>
@@ -94,7 +94,7 @@ export default function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
           <button
             type="button"
             onClick={goNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-2 py-1 text-sm shadow hover:bg-white"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 px-2 py-1 text-sm shadow hover:bg-white"
           >
             {">"}
           </button>
