@@ -1,15 +1,42 @@
 // app/dashboard/MyProducts/edit/[id]/page.tsx
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import ProductForm from "@/components/ProductForm";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
-  const session = await auth();
-  if (!session?.user?.email) redirect("/login");
+// CRITICAL: You MUST await params in Next.js 16 with Turbopack
+export default async function EditProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>; // ← This is now a Promise!
+}) {
+  // UNWRAP the params Promise first
+  const { id } = await params;
 
-  const product = await prisma.product.findUnique({
-    where: { id: params.id },
+  const session = await auth();
+  if (!session?.user?.email) {
+    redirect("/login");
+  }
+
+  // Get current user ID
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true },
+  });
+
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  // Build where condition separately (fixes Turbopack source map bug)
+  const whereCondition = {
+    id,
+    userId: currentUser.id,
+  };
+
+  const product = await prisma.product.findFirst({
+    where: whereCondition,
     select: {
       id: true,
       title: true,
@@ -17,30 +44,18 @@ export default async function EditProductPage({ params }: { params: { id: string
       price: true,
       category: true,
       images: true,
-      createdAt: true,
-      updatedAt: true,
-      userId: true,
-      // Add the owner's email
-      user: {
-        select: {
-          email: true,
-        },
-      },
     },
   });
 
-  if (!product || product.user.email !== session.user.email) {
-    return <div className="text-center py-20">Product not found or access denied</div>;
+  if (!product) {
+    notFound();
   }
-
-  // Pass the product without the nested user (your form probably doesn't expect it)
-  const { user, ...productWithoutUser } = product;
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-3xl font-bold">Edit Product</h1>
-        <ProductForm product={productWithoutUser} />
+      <div className="mx-auto max-w-3xl px-6">
+        <h1 className="mb-8 text-3xl font-bold text-gray-900">Edit Product</h1>
+        <ProductForm product={product} />
       </div>
     </div>
   );
