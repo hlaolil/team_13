@@ -5,21 +5,26 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
-// Validation schema – description is required in your DB
+// This works on ALL versions of Zod (3.18 → 3.23+)
 const updateProductSchema = z.object({
-  title: z.string().min(1).max(200).trim(),
-  price: z.number().int().positive(),
-  description: z.string().trim().min(1, "Description is required"), // required
-  images: z.array(z.string().url()).default([]),
-  category: z.enum(["METALWORK", "TEXTILE", "WOODWORK"]),
+  title: z.string().min(1, "Title is required").max(200).trim(),
+  price: z.number().int().positive("Price must be a positive number (in cents)"),
+  description: z.string().min(1, "Description is required").trim(),
+  images: z.array(z.string().url("Each image must be a valid URL")).default([]),
+
+  // Simple, bullet-proof enum that works everywhere
+  category: z.enum(["METALWORK", "TEXTILE", "WOODWORK"], {
+    message: "Category is required and must be one of: METALWORK, TEXTILE, WOODWORK",
+  }),
 });
 
-type Params = Promise<{ id: string }>;
-
-export async function PUT(request: NextRequest, { params }: { params: Params }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
 
-  // ───── Auth ─────
+  // ───── Authentication ─────
   const session = await auth();
   if (!session?.user?.email) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -34,7 +39,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  // ───── Ownership ─────
+  // ───── Ownership check ─────
   const product = await prisma.product.findUnique({
     where: { id },
     select: { userId: true },
@@ -49,7 +54,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
   }
 
   // ───── Parse & validate body ─────
-  let body;
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
@@ -57,23 +62,27 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
   }
 
   const result = updateProductSchema.safeParse(body);
+
   if (!result.success) {
     return NextResponse.json(
-      { error: "Invalid data", details: result.error.format() },
+      {
+        error: "Validation failed",
+        details: result.error.format(),
+      },
       { status: 400 }
     );
   }
 
   const { title, price, description, images, category } = result.data;
 
-  // ───── Update (description is required → always string) ─────
+  // ───── Update product ─────
   try {
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         title,
         price,
-        description,        // ← now guaranteed to be non-empty string
+        description, // required field → always string
         images,
         category,
       },
