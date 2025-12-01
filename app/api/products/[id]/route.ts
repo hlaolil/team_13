@@ -3,24 +3,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
-
-// Validation schema
-const updateProductSchema = z.object({
-  title: z.string().min(1).max(200).trim(),
-  price: z.number().int().positive(),
-  description: z.string().min(1).trim(),
-  images: z.array(z.string().url()).default([]),
-  category: z.enum(["METALWORK", "TEXTILE", "WOODWORK"]),
-});
+import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
-
-  // ───── Auth check ─────
   const session = await auth();
   if (!session?.user?.email) {
     return new NextResponse("Unauthorized", { status: 401 });

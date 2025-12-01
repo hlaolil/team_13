@@ -20,11 +20,11 @@ export const authConfig: NextAuthConfig = {
         return isLoggedIn ? true : false;
       }
 
-      // if (isLoggedIn) {
-      //   const role = (auth?.user as any)?.role;
-      //   const target = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
-      //   return Response.redirect(new URL(target, nextUrl));
-      // }
+      if (isLoggedIn) {
+        const role = (auth?.user as any)?.role;
+        const target = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
+        return Response.redirect(new URL(target, nextUrl));
+      }
       return true;
     },
   },
